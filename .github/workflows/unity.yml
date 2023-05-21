@@ -1,0 +1,21 @@
+name: Unity Build
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install Unity
+      uses: game-ci/unity-test-runner@v2
+      with:
+        unityVersion: '2020.3.30f1'
+    - name: Build project
+      run: |
+        echo "Building project"
+        /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath ./ -executeMethod MyEditorScript.PerformBuild -buildTarget StandaloneWindows64 -buildOptions StrictMode
