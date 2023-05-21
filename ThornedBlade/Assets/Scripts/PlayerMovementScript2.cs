@@ -7,7 +7,7 @@ public class PlayerMovementScript2 : MonoBehaviour
     private float horizontal;
     private float speed = 8f;
     private float jumpingPower = 16f;
-    private bool isFacingRight = true;
+    private bool isFacingRight = false;
 
     private bool canDash = true;
     private bool isDashing;
@@ -79,7 +79,7 @@ public class PlayerMovementScript2 : MonoBehaviour
         isDashing = true;
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
-        rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
+        rb.velocity = new Vector2(transform.localScale.x * -dashingPower, 0f);
         tr.emitting = true;
         yield return new WaitForSeconds(dashingTime);
         tr.emitting = false;
