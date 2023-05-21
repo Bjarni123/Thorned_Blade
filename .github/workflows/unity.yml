@@ -1,9 +1,6 @@
 name: Unity Build
 
-on:
-  push:
-    branches:
-      - '*'
+on: [push, pull_request]
 
 jobs:
   build:
@@ -11,11 +8,25 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Install Unity
-      uses: game-ci/unity-test-runner@v2
-      with:
-        unityVersion: '2020.3.30f1'
-    - name: Build project
-      run: |
-        echo "Building project"
-        /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath ./ -executeMethod MyEditorScript.PerformBuild -buildTarget StandaloneWindows64 -buildOptions StrictMode
+    - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          unityVersion: '2020.3.30f1'
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: StandaloneWindows64
+          unityVersion: '2020.3.30f1'
