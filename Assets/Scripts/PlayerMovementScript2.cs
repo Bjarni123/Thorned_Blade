@@ -6,28 +6,63 @@ public class PlayerMovementScript2 : MonoBehaviour
 {
     private float horizontal;
     private float speed = 8f;
-    private float jumpingPower = 16f;
+    public float jumpingPower = 16f;
     private bool isFacingRight = false;
 
     private bool canDash = true;
     private bool isDashing;
-    private float dashingPower = 24f;
-    private float dashingTime = 0.2f;
+    public float dashingPower = 50f;
+    private float dashingTime = 0.1f;
     private float dashingCooldown = 1f;
 
+    public float fallMultipler = 2.5f;
+    public float lowJumpMultiplier = 2f;
+
+    private string _currentAnimation;
+    const string PLAYER_IDLE = "player_idle";
+    const string PLAYER_RUNNING = "player_running";
+
+
+    [Header("Objects")]
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private TrailRenderer tr;
-    
+    private Animator anim;
+
+
+    private void Start()
+    {
+        anim = gameObject.GetComponent<Animator>();
+    }
+
     void Update()
     {
+        if ( rb.velocity.y < 0)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultipler - 1) * Time.deltaTime;
+        }
+        else if ( rb.velocity.y > 0 /*&& !Input.GetButton("Jump")*/)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+
         if (isDashing == true)
         {
             return;
         }
 
         horizontal = Input.GetAxisRaw("Horizontal");
+
+        if (rb.velocity.x != 0)
+        {
+            //Debug.Log("Should be running");
+            ChangeAnimationState(PLAYER_RUNNING);
+        }
+        else
+        {
+            ChangeAnimationState(PLAYER_IDLE);
+        }
 
         if (Input.GetButtonDown("Jump") && isGrounded())
         {
@@ -47,11 +82,6 @@ public class PlayerMovementScript2 : MonoBehaviour
         Flip();
     }
 
-    private bool isGrounded()
-    {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-    }
-
     private void FixedUpdate()
     {
         if (isDashing == true)
@@ -60,6 +90,11 @@ public class PlayerMovementScript2 : MonoBehaviour
         }
 
         rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+    }
+
+    private bool isGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
     private void Flip()
@@ -87,5 +122,23 @@ public class PlayerMovementScript2 : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
+    }
+
+    private void ChangeAnimationState(string newAnimation)
+    {
+        if (newAnimation != _currentAnimation) {
+            anim.Play(newAnimation);
+            _currentAnimation = newAnimation;
+        }
+    }
+
+    bool IsAnimationPlaying(Animator animator, string AnimationName)
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName(AnimationName) &&
+            animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        {
+            return true;
+        }
+        return false;
     }
 }
