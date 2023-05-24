@@ -21,7 +21,7 @@ jobs:
         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
       with:
         githubToken: ${{ secrets.GITHUB_TOKEN }}
-        unityVersion: '2020.3.30f1'
+        unityVersion: '2020.3.48f1'
     - name: Build project
       uses: game-ci/unity-builder@v2
       env:
@@ -30,4 +30,4 @@ jobs:
         UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       with:
         targetPlatform: StandaloneWindows64
-        unityVersion: '2020.3.30f1'
+        unityVersion: '2020.3.48f1'
