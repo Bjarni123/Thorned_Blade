@@ -1222,10 +1222,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b92e1f91668f5c45a2e39ec50c4ce77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpingPower: 32
-  dashingPower: 50
+  jumpingPower: 60
+  dashingPower: 42
   fallMultipler: 2
-  lowJumpMultiplier: 5
+  lowJumpMultiplier: 15
+  cursorPosition: {x: 0, y: 0, z: 0}
   rb: {fileID: 1947723388}
   groundCheck: {fileID: 1872780815}
   groundLayer:

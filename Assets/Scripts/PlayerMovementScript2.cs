@@ -22,6 +22,8 @@ public class PlayerMovementScript2 : MonoBehaviour
     const string PLAYER_IDLE = "player_idle";
     const string PLAYER_RUNNING = "player_running";
 
+    public Vector3 cursorPosition;
+
 
     [Header("Objects")]
     [SerializeField] private Rigidbody2D rb;
@@ -38,6 +40,7 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     void Update()
     {
+
         if ( rb.velocity.y < 0)
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultipler - 1) * Time.deltaTime;
@@ -114,7 +117,13 @@ public class PlayerMovementScript2 : MonoBehaviour
         isDashing = true;
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
-        rb.velocity = new Vector2(transform.localScale.x * -dashingPower, 0f);
+
+        // rb.velocity = new Vector2(transform.localScale.x * -dashingPower, 0f);
+        cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        cursorPosition.z = 0f;
+        Vector2 dashingDir = (cursorPosition - transform.position).normalized;
+        rb.velocity = dashingDir * dashingPower;
+
         tr.emitting = true;
         yield return new WaitForSeconds(dashingTime);
         tr.emitting = false;
