@@ -23,11 +23,16 @@ public class PlayerMovementScript2 : MonoBehaviour
     const string PLAYER_RUNNING = "player_running";
 
 
+    private bool on_wall = false;
+
+
     [Header("Objects")]
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private TrailRenderer tr;
+    [SerializeField] private Transform wall_checker;
+    [SerializeField] private LayerMask jump_wall;
     private Animator anim;
 
 
@@ -35,9 +40,20 @@ public class PlayerMovementScript2 : MonoBehaviour
     {
         anim = gameObject.GetComponent<Animator>();
     }
+    
 
     void Update()
     {
+        /* Debug.Log(wall_checker.GetComponent<Collider>());  */
+        if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
+            Debug.Log("touched wall"); 
+            fallMultipler = 0.5f;
+        } else {
+            fallMultipler = 2.5f;
+        }
+
+
+
         if ( rb.velocity.y < 0)
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultipler - 1) * Time.deltaTime;
@@ -94,8 +110,15 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     private bool isGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer) || Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) || Physics2D.OverlapCircle(groundCheck.position, 0.2f, jump_wall) ;
     }
+
+    /* private void is_on_wall()
+    {
+        if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
+            return Debug.Log("touched wall");
+        }
+    } */
 
     private void Flip()
     {
