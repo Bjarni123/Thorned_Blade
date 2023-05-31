@@ -9,20 +9,26 @@ public class PlayerMovementScript2 : MonoBehaviour
     public float jumpingPower = 16f;
     private bool isFacingRight = false;
 
+    /* dash */
     private bool canDash = true;
     private bool isDashing;
     public float dashingPower = 50f;
     private float dashingTime = 0.1f;
     private float dashingCooldown = 1f;
 
+    
     public float fallMultipler = 2.5f;
     public float lowJumpMultiplier = 2f;
 
+    /* animation */
     private string _currentAnimation;
     const string PLAYER_IDLE = "player_idle";
     const string PLAYER_RUNNING = "player_running";
 
+    /* dash i att mus */
+    public Vector3 cursorPosition;
 
+    /* wall jump */
     private bool on_wall = false;
 
 
@@ -110,10 +116,11 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     private bool isGrounded()
     {
+        /* enda partur þarf að breyta allt eftir fyrsta and */
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer) || Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) || Physics2D.OverlapCircle(groundCheck.position, 0.2f, jump_wall) ;
     }
 
-    /* private void is_on_wall()
+    /* private bool is_on_wall()
     {
         if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
             return Debug.Log("touched wall");
@@ -137,7 +144,13 @@ public class PlayerMovementScript2 : MonoBehaviour
         isDashing = true;
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
-        rb.velocity = new Vector2(transform.localScale.x * -dashingPower, 0f);
+
+        // rb.velocity = new Vector2(transform.localScale.x * -dashingPower, 0f);
+        cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        cursorPosition.z = 0f;
+        Vector2 dashingDir = (cursorPosition - transform.position).normalized;
+        rb.velocity = dashingDir * dashingPower;
+
         tr.emitting = true;
         yield return new WaitForSeconds(dashingTime);
         tr.emitting = false;
