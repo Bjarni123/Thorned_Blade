@@ -52,6 +52,62 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     void Update()
     {
+        
+        handleInAirGravity();
+        handleMovement();
+
+        // !!!!!!!!!! Tumi, útskýra hvað þetta gerir og hvort við þurfum að hafa þetta
+
+        /* Debug.Log(wall_checker.GetComponent<Collider>());  */
+        /* if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
+            Debug.Log("touched wall"); 
+            fallMultipler = 0.5f;
+        } else {
+            fallMultipler = 2.5f;
+        } */
+
+        Flip();
+    }
+
+    private void FixedUpdate()
+    {
+        handleCursor();
+        if (isDashing == true)
+        {
+            return;
+        }
+
+        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+    }
+
+    private bool isGrounded()
+    {
+        /* enda partur þarf að breyta allt eftir fyrsta and */
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer) || Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) || Physics2D.OverlapCircle(groundCheck.position, 0.2f, jump_wall) ;
+    }
+
+    /* private bool is_on_wall()
+    {
+        if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
+            return Debug.Log("touched wall");
+        }
+    } */
+
+    private void handleInAirGravity()
+    {
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultipler - 1) * Time.deltaTime;
+        }
+        else if (rb.velocity.y > 0 /*&& !Input.GetButton("Jump")*/)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+
+    }
+
+    private void handleCursor()
+    {
         // cursor Position
         cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         cursorPosition.z = 0f;
@@ -63,27 +119,10 @@ public class PlayerMovementScript2 : MonoBehaviour
         float AngleRad = Mathf.Atan2(lookAt.y - Cursor.position.y, lookAt.x - Cursor.position.x);
         float AngleDeg = (180 / Mathf.PI) * AngleRad;
         Cursor.rotation = Quaternion.Euler(0f, 0f, AngleDeg + 90);
-        
+    }
 
-        /* Debug.Log(wall_checker.GetComponent<Collider>());  */
-        if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
-            Debug.Log("touched wall"); 
-            fallMultipler = 0.5f;
-        } else {
-            fallMultipler = 2.5f;
-        }
-
-
-
-        if ( rb.velocity.y < 0)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultipler - 1) * Time.deltaTime;
-        }
-        else if ( rb.velocity.y > 0 /*&& !Input.GetButton("Jump")*/)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
-        }
-
+    private void handleMovement()
+    {
         if (isDashing == true)
         {
             return;
@@ -115,32 +154,7 @@ public class PlayerMovementScript2 : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
-
-        Flip();
     }
-
-    private void FixedUpdate()
-    {
-        if (isDashing == true)
-        {
-            return;
-        }
-
-        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
-    }
-
-    private bool isGrounded()
-    {
-        /* enda partur þarf að breyta allt eftir fyrsta and */
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer) || Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) || Physics2D.OverlapCircle(groundCheck.position, 0.2f, jump_wall) ;
-    }
-
-    /* private bool is_on_wall()
-    {
-        if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
-            return Debug.Log("touched wall");
-        }
-    } */
 
     private void Flip()
     {
