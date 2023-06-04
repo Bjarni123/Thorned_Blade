@@ -26,7 +26,8 @@ public class PlayerMovementScript2 : MonoBehaviour
     const string PLAYER_RUNNING = "player_running";
 
     /* dash i att mus */
-    public Vector3 cursorPosition;
+    private Vector3 cursorPosition;
+    public Vector2 cursorOffset;
 
     /* wall jump */
     private bool on_wall = false;
@@ -51,13 +52,17 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     void Update()
     {
-        
+        // cursor Position
         cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         cursorPosition.z = 0f;
         Vector2 cursorDir = (cursorPosition - transform.position).normalized;
-        Cursor.transform.position = rb.position + cursorDir;
-        Cursor.eulerAngles = new Vector3(0, 0, 90);
-        Debug.Log(Cursor.position);
+        Cursor.transform.position = (rb.position + cursorDir) - cursorOffset;
+
+        // Cursor Rotation
+        Vector3 lookAt = rb.position;
+        float AngleRad = Mathf.Atan2(lookAt.y - Cursor.position.y, lookAt.x - Cursor.position.x);
+        float AngleDeg = (180 / Mathf.PI) * AngleRad;
+        Cursor.rotation = Quaternion.Euler(0f, 0f, AngleDeg + 90);
         
 
         /* Debug.Log(wall_checker.GetComponent<Collider>());  */
