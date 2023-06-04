@@ -39,6 +39,7 @@ public class PlayerMovementScript2 : MonoBehaviour
     [SerializeField] private TrailRenderer tr;
     [SerializeField] private Transform wall_checker;
     [SerializeField] private LayerMask jump_wall;
+    [SerializeField] private Transform Cursor;
     private Animator anim;
 
 
@@ -50,6 +51,15 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     void Update()
     {
+        
+        cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        cursorPosition.z = 0f;
+        Vector2 cursorDir = (cursorPosition - transform.position).normalized;
+        Cursor.transform.position = rb.position + cursorDir;
+        Cursor.eulerAngles = new Vector3(0, 0, 90);
+        Debug.Log(Cursor.position);
+        
+
         /* Debug.Log(wall_checker.GetComponent<Collider>());  */
         if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
             Debug.Log("touched wall"); 
