@@ -160,7 +160,7 @@ public class PlayerMovementScript2 : MonoBehaviour
     private bool isWalled()
     {
         // return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
-        if (Physics2D.BoxCast((transform.position + wallCastOffset), wallBoxSize, 0, transform.right, wallCastDistance, wallLayer) || Physics2D.BoxCast((transform.position + wallCastOffset), wallBoxSize, 0, -transform.right, wallCastDistance, wallLayer))
+        if (Physics2D.BoxCast((transform.position + wallCastOffset), wallBoxSize, 0, -transform.up, wallCastDistance, wallLayer))
         {
             return true;
         }
@@ -178,7 +178,7 @@ public class PlayerMovementScript2 : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
-       {
+        {
             isWallSliding = false;
         }
     }
@@ -264,7 +264,9 @@ public class PlayerMovementScript2 : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
-            wallCastOffset.x *= -1f;
+            //Vector3 wallCastOffsetTemp = wallCastOffset;
+            //wallCastOffsetTemp.x *= -1f;
+            //wallCastOffset = wallCastOffsetTemp;
             //if (wallCastOffset == wallCastOffsetLeft)
             //{
             //    wallCastOffset = wallCastOffsetRight;
