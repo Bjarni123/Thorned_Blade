@@ -43,13 +43,31 @@ public class PlayerMovementScript2 : MonoBehaviour
     private bool on_wall = false;
 
 
+    
+    //[SerializeField] private Transform wallCheck;
+    //[SerializeField] private LayerMask wallLayer;
+    //[SerializeField] private Transform groundCheck;
+    //[SerializeField] private LayerMask groundLayer;
+
+    [Header("Ground Check")]
+    // wall og ground check
+    public Vector2 groundBoxSize;
+    public float groundCastDistance;
+    public Vector3 groundCastOffset;
+    [SerializeField] private LayerMask groundLayer;
+
+    [Header("Wall Check")]
+    public Vector2 wallBoxSize;
+    public float wallCastDistance;
+    //public Vector3 wallCastOffsetLeft;
+    //public Vector3 wallCastOffsetRight;
+    public Vector3 wallCastOffset;
+
+    [SerializeField] private LayerMask wallLayer;
+
     [Header("Objects")]
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
     [SerializeField] private TrailRenderer tr;
-    [SerializeField] private Transform wallCheck;
-    [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Transform Cursor;
     private Animator anim;
 
@@ -57,6 +75,7 @@ public class PlayerMovementScript2 : MonoBehaviour
     private void Start()
     {
         anim = gameObject.GetComponent<Animator>();
+        // wallCastOffset = wallCastOffsetLeft;
     }
     
 
@@ -66,8 +85,10 @@ public class PlayerMovementScript2 : MonoBehaviour
         handleInAirGravity();
         handleMovement();
 
+        
         WallSlide();
         wallJump();
+        
 
         if (!isWallJumping)
         {
@@ -89,7 +110,23 @@ public class PlayerMovementScript2 : MonoBehaviour
     private bool isGrounded()
     {
         /* enda partur þarf að breyta allt eftir fyrsta and */
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        // return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer) || Physics2D.OverlapCircle(groundCheck.position, 0.2f, wallLayer);
+
+        if (Physics2D.BoxCast((transform.position + groundCastOffset), groundBoxSize, 0, -transform.up, groundCastDistance, groundLayer))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube((transform.position - transform.up * wallCastDistance) + wallCastOffset, wallBoxSize);
+        Gizmos.DrawWireCube((transform.position - transform.up * groundCastDistance) + groundCastOffset, groundBoxSize);
+        
     }
 
     private void handleInAirGravity()
@@ -122,7 +159,15 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     private bool isWalled()
     {
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+        // return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+        if (Physics2D.BoxCast((transform.position + wallCastOffset), wallBoxSize, 0, transform.right, wallCastDistance, wallLayer) || Physics2D.BoxCast((transform.position + wallCastOffset), wallBoxSize, 0, -transform.right, wallCastDistance, wallLayer))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void WallSlide()
@@ -133,7 +178,7 @@ public class PlayerMovementScript2 : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
-        {
+       {
             isWallSliding = false;
         }
     }
@@ -167,7 +212,7 @@ public class PlayerMovementScript2 : MonoBehaviour
                 transform.localScale = localScale;
             }
 
-            Invoke(nameof(StopWallJumping), wallJumpingDuration);
+           Invoke(nameof(StopWallJumping), wallJumpingDuration);
         }
     }
 
@@ -219,6 +264,15 @@ public class PlayerMovementScript2 : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+            wallCastOffset.x *= -1f;
+            //if (wallCastOffset == wallCastOffsetLeft)
+            //{
+            //    wallCastOffset = wallCastOffsetRight;
+            //}
+            //else
+            //{
+            //    wallCastOffset = wallCastOffsetLeft;
+            //}
         }
     }
 
