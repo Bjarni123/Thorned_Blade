@@ -20,7 +20,6 @@ jobs:
       env:
         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
       with:
-        githubToken: ${{ secrets.GITHUB_TOKEN }}
         unityVersion: '2020.3.30f1'
     - name: Build project
       uses: game-ci/unity-builder@v2
