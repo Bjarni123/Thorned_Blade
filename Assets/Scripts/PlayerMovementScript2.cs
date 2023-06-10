@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovementScript2 : MonoBehaviour
@@ -42,11 +41,13 @@ public class PlayerMovementScript2 : MonoBehaviour
     [SerializeField] private LayerMask jump_wall;
     [SerializeField] private Transform Cursor;
     private Animator anim;
+    private BoxCollider2D collider;
 
 
     private void Start()
     {
         anim = gameObject.GetComponent<Animator>();
+        collider = gameObject.GetComponent<BoxCollider2D>();
     }
     
 
@@ -83,7 +84,9 @@ public class PlayerMovementScript2 : MonoBehaviour
     private bool isGrounded()
     {
         /* enda partur þarf að breyta allt eftir fyrsta and */
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer) || Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) || Physics2D.OverlapCircle(groundCheck.position, 0.2f, jump_wall) ;
+        var topLeft = new Vector2(collider.bounds.min.x, collider.bounds.min.y + 0.1f);
+        var bottomRight = new Vector2(collider.bounds.max.x, collider.bounds.min.y - 0.1f);
+        return Physics2D.OverlapArea(topLeft, bottomRight, groundLayer | jump_wall) || Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall);
     }
 
     /* private bool is_on_wall()
