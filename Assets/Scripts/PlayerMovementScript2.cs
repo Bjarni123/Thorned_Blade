@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovementScript2 : MonoBehaviour
@@ -72,6 +71,7 @@ public class PlayerMovementScript2 : MonoBehaviour
     [SerializeField] private TrailRenderer tr;
     [SerializeField] private Transform Cursor;
     private Animator anim;
+    private BoxCollider2D collider;
 
 
     private void Start()
@@ -83,6 +83,7 @@ public class PlayerMovementScript2 : MonoBehaviour
         Vector3 wallCastOffsetTemp = wallCastOffset;
         wallCastOffsetTemp.x *= -1f;
         wallCastOffsetRight = wallCastOffsetTemp;
+
     }
     
 
