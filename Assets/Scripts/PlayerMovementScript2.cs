@@ -15,6 +15,16 @@ public class PlayerMovementScript2 : MonoBehaviour
     private float dashingTime = 0.1f;
     private float dashingCooldown = 1f;
 
+    // wall jumping
+    private bool isWallSliding;
+    private float wallSlidingSpeed = 2f;
+    private bool isWallJumping;
+    private float wallJumpingDirection;
+    private float wallJumpingTime = 0.2f;
+    private float wallJumpingCounter;
+    private float wallJumpingDuration = 0.4f;
+    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+
     
     public float fallMultipler = 2.5f;
     public float lowJumpMultiplier = 2f;
@@ -32,13 +42,33 @@ public class PlayerMovementScript2 : MonoBehaviour
     private bool on_wall = false;
 
 
+    
+    //[SerializeField] private Transform wallCheck;
+    //[SerializeField] private LayerMask wallLayer;
+    //[SerializeField] private Transform groundCheck;
+    //[SerializeField] private LayerMask groundLayer;
+
+    [Header("Ground Check")]
+    // wall og ground check
+    public Vector2 groundBoxSize;
+    public float groundCastDistance;
+    public Vector3 groundCastOffset;
+    [SerializeField] private LayerMask groundLayer;
+
+    [Header("Wall Check")]
+    public Vector2 wallBoxSize;
+    public float wallCastDistance;
+    //public Vector3 wallCastOffsetLeft;
+    //public Vector3 wallCastOffsetRight;
+    public Vector3 wallCastOffset;
+    private Vector3 wallCastOffsetRight;
+    private Vector3 wallCastOffsetLeft;
+
+    [SerializeField] private LayerMask wallLayer;
+
     [Header("Objects")]
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
     [SerializeField] private TrailRenderer tr;
-    [SerializeField] private Transform wall_checker;
-    [SerializeField] private LayerMask jump_wall;
     [SerializeField] private Transform Cursor;
     private Animator anim;
     private BoxCollider2D collider;
@@ -47,7 +77,13 @@ public class PlayerMovementScript2 : MonoBehaviour
     private void Start()
     {
         anim = gameObject.GetComponent<Animator>();
-        collider = gameObject.GetComponent<BoxCollider2D>();
+        // wallCastOffset = wallCastOffsetLeft;
+
+        wallCastOffsetLeft = wallCastOffset;
+        Vector3 wallCastOffsetTemp = wallCastOffset;
+        wallCastOffsetTemp.x *= -1f;
+        wallCastOffsetRight = wallCastOffsetTemp;
+
     }
     
 
@@ -57,23 +93,21 @@ public class PlayerMovementScript2 : MonoBehaviour
         handleInAirGravity();
         handleMovement();
 
-        // !!!!!!!!!! Tumi, útskýra hvað þetta gerir og hvort við þurfum að hafa þetta
+        
+        WallSlide();
+        wallJump();
+        
 
-        /* Debug.Log(wall_checker.GetComponent<Collider>());  */
-        /* if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
-            Debug.Log("touched wall"); 
-            fallMultipler = 0.5f;
-        } else {
-            fallMultipler = 2.5f;
-        } */
-
-        Flip();
+        if (!isWallJumping)
+        {
+            Flip();
+        }
     }
 
     private void FixedUpdate()
     {
         handleCursor();
-        if (isDashing == true)
+        if (isDashing == true || isWallJumping)
         {
             return;
         }
@@ -84,17 +118,24 @@ public class PlayerMovementScript2 : MonoBehaviour
     private bool isGrounded()
     {
         /* enda partur þarf að breyta allt eftir fyrsta and */
-        var topLeft = new Vector2(collider.bounds.min.x, collider.bounds.min.y + 0.1f);
-        var bottomRight = new Vector2(collider.bounds.max.x, collider.bounds.min.y - 0.1f);
-        return Physics2D.OverlapArea(topLeft, bottomRight, groundLayer | jump_wall) || Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall);
+        // return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer) || Physics2D.OverlapCircle(groundCheck.position, 0.2f, wallLayer);
+
+        if (Physics2D.BoxCast((transform.position + groundCastOffset), groundBoxSize, 0, -transform.up, groundCastDistance, groundLayer))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    /* private bool is_on_wall()
+    private void OnDrawGizmos()
     {
-        if (Physics2D.OverlapCircle(wall_checker.position, 0.2f, jump_wall) == true){
-            return Debug.Log("touched wall");
-        }
-    } */
+        Gizmos.DrawWireCube((transform.position - transform.up * wallCastDistance) + wallCastOffset, wallBoxSize);
+        Gizmos.DrawWireCube((transform.position - transform.up * groundCastDistance) + groundCastOffset, groundBoxSize);
+        
+    }
 
     private void handleInAirGravity()
     {
@@ -122,6 +163,84 @@ public class PlayerMovementScript2 : MonoBehaviour
         float AngleRad = Mathf.Atan2(lookAt.y - Cursor.position.y, lookAt.x - Cursor.position.x);
         float AngleDeg = (180 / Mathf.PI) * AngleRad;
         Cursor.rotation = Quaternion.Euler(0f, 0f, AngleDeg + 90);
+    }
+
+    private bool isWalled()
+    {
+        // return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+        if (isFacingRight)
+        {
+            if (Physics2D.BoxCast((transform.position + wallCastOffsetRight), wallBoxSize, 0, -transform.right, wallCastDistance, wallLayer))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (Physics2D.BoxCast((transform.position + wallCastOffsetLeft), wallBoxSize, 0, transform.right, wallCastDistance, wallLayer))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    private void WallSlide()
+    {
+        if (isWalled() && !isGrounded() && horizontal != 0f)
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+    private void wallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallSliding = false;
+            wallJumpingDirection = -transform.localScale.x;
+            wallJumpingCounter = wallJumpingTime;
+
+            CancelInvoke(nameof(StopWallJumping));
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+        {
+            isWallJumping = true;
+            rb.velocity = new Vector2(wallJumpingDirection * -wallJumpingPower.x, wallJumpingPower.y);
+            wallJumpingCounter = 0f;
+
+            if (transform.localScale.x != wallJumpingDirection)
+            {
+                isFacingRight = !isFacingRight;
+                Vector3 localScale = transform.localScale;
+                localScale.x *= -1f;
+                transform.localScale = localScale;
+            }
+
+           Invoke(nameof(StopWallJumping), wallJumpingDuration);
+        }
+    }
+
+    private void StopWallJumping()
+    {
+        isWallJumping = false;
     }
 
     private void handleMovement()
@@ -167,6 +286,7 @@ public class PlayerMovementScript2 : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+            
         }
     }
 
