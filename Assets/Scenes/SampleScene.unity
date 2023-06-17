@@ -3163,9 +3163,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  wallBoxSize: {x: 1.1, y: 1.2}
+  wallBoxSize: {x: 0.4, y: 1.2}
   wallCastDistance: 0
-  wallCastOffset: {x: 0.07, y: -0.3, z: 0}
+  wallCastOffset: {x: -0.4, y: -0.3, z: 0}
   wallLayer:
     serializedVersion: 2
     m_Bits: 128

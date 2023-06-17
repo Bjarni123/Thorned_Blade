@@ -62,6 +62,8 @@ public class PlayerMovementScript2 : MonoBehaviour
     //public Vector3 wallCastOffsetLeft;
     //public Vector3 wallCastOffsetRight;
     public Vector3 wallCastOffset;
+    private Vector3 wallCastOffsetRight;
+    private Vector3 wallCastOffsetLeft;
 
     [SerializeField] private LayerMask wallLayer;
 
@@ -76,6 +78,11 @@ public class PlayerMovementScript2 : MonoBehaviour
     {
         anim = gameObject.GetComponent<Animator>();
         // wallCastOffset = wallCastOffsetLeft;
+
+        wallCastOffsetLeft = wallCastOffset;
+        Vector3 wallCastOffsetTemp = wallCastOffset;
+        wallCastOffsetTemp.x *= -1f;
+        wallCastOffsetRight = wallCastOffsetTemp;
     }
     
 
@@ -160,13 +167,27 @@ public class PlayerMovementScript2 : MonoBehaviour
     private bool isWalled()
     {
         // return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
-        if (Physics2D.BoxCast((transform.position + wallCastOffset), wallBoxSize, 0, -transform.up, wallCastDistance, wallLayer))
+        if (isFacingRight)
         {
-            return true;
+            if (Physics2D.BoxCast((transform.position + wallCastOffsetRight), wallBoxSize, 0, -transform.right, wallCastDistance, wallLayer))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         else
         {
-            return false;
+            if (Physics2D.BoxCast((transform.position + wallCastOffsetLeft), wallBoxSize, 0, transform.right, wallCastDistance, wallLayer))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
@@ -264,17 +285,7 @@ public class PlayerMovementScript2 : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
-            //Vector3 wallCastOffsetTemp = wallCastOffset;
-            //wallCastOffsetTemp.x *= -1f;
-            //wallCastOffset = wallCastOffsetTemp;
-            //if (wallCastOffset == wallCastOffsetLeft)
-            //{
-            //    wallCastOffset = wallCastOffsetRight;
-            //}
-            //else
-            //{
-            //    wallCastOffset = wallCastOffsetLeft;
-            //}
+            
         }
     }
 
