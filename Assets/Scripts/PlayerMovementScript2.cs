@@ -106,7 +106,7 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     private void FixedUpdate()
     {
-        handleCursor();
+        // handleCursor();
         if (isDashing == true || isWallJumping)
         {
             return;
