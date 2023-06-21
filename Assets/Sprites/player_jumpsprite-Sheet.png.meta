@@ -1,25 +1,34 @@
 fileFormatVersion: 2
-guid: bce647ae3d560a3419ae6ac6a0501891
+guid: b2455dd6a14625749b52a31bcf4cfcb8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -537809606904271880
-    second: Player_running-Sheet.updated_0
+      213: 6173511056368931276
+    second: player_jumpsprite-Sheet_0
   - first:
-      213: -3215998682195196222
-    second: Player_running-Sheet.updated_1
+      213: -6047722701143048585
+    second: player_jumpsprite-Sheet_1
   - first:
-      213: 4367213530412935605
-    second: Player_running-Sheet.updated_2
+      213: 8076476327812309248
+    second: player_jumpsprite-Sheet_2
   - first:
-      213: 4867268588099385761
-    second: Player_running-Sheet.updated_3
+      213: 3821939407608537219
+    second: player_jumpsprite-Sheet_3
   - first:
-      213: -5994489917341703149
-    second: Player_running-Sheet.updated_4
+      213: 6737335493834064115
+    second: player_jumpsprite-Sheet_4
   - first:
-      213: 7517159145647818306
-    second: Player_running-Sheet.updated_5
+      213: 2432716356063517931
+    second: player_jumpsprite-Sheet_5
+  - first:
+      213: 150779566182150081
+    second: player_jumpsprite-Sheet_6
+  - first:
+      213: 4548343775539245918
+    second: player_jumpsprite-Sheet_7
+  - first:
+      213: -6325139257577155937
+    second: player_jumpsprite-Sheet_8
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -121,7 +130,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Player_running-Sheet.updated_0
+      name: player_jumpsprite-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
@@ -135,14 +144,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8fbadaf03015988f0800000000000000
-      internalID: -537809606904271880
+      spriteID: cc111dbd897bca550800000000000000
+      internalID: 6173511056368931276
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_running-Sheet.updated_1
+      name: player_jumpsprite-Sheet_1
       rect:
         serializedVersion: 2
         x: 32
@@ -156,14 +165,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2c681a5dc3a7e53d0800000000000000
-      internalID: -3215998682195196222
+      spriteID: 77e7d4ade3c221ca0800000000000000
+      internalID: -6047722701143048585
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_running-Sheet.updated_2
+      name: player_jumpsprite-Sheet_2
       rect:
         serializedVersion: 2
         x: 64
@@ -177,14 +186,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5b9ea8241957b9c30800000000000000
-      internalID: 4367213530412935605
+      spriteID: 001aa1cdd68651070800000000000000
+      internalID: 8076476327812309248
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_running-Sheet.updated_3
+      name: player_jumpsprite-Sheet_3
       rect:
         serializedVersion: 2
         x: 96
@@ -198,14 +207,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1a9b4143ef20c8340800000000000000
-      internalID: 4867268588099385761
+      spriteID: 380e29744a14a0530800000000000000
+      internalID: 3821939407608537219
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_running-Sheet.updated_4
+      name: player_jumpsprite-Sheet_4
       rect:
         serializedVersion: 2
         x: 128
@@ -219,14 +228,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 314ef2b2e2b4fcca0800000000000000
-      internalID: -5994489917341703149
+      spriteID: 3f04c9a8fe2df7d50800000000000000
+      internalID: 6737335493834064115
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_running-Sheet.updated_5
+      name: player_jumpsprite-Sheet_5
       rect:
         serializedVersion: 2
         x: 160
@@ -240,8 +249,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 246ca645a60525860800000000000000
-      internalID: 7517159145647818306
+      spriteID: becd27203aeb2c120800000000000000
+      internalID: 2432716356063517931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cfaca1773da71200800000000000000
+      internalID: 150779566182150081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e533061d096fe1f30800000000000000
+      internalID: 4548343775539245918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f925c357b579838a0800000000000000
+      internalID: -6325139257577155937
       vertices: []
       indices: 
       edges: []

@@ -37,6 +37,7 @@ public class PlayerMovementScript2 : MonoBehaviour
     const string PLAYER_JUMPING = "player_jump_up";
     const string PLAYER_FALLING_DOWN = "player_fall_down";
     const string PLAYER_JUMP_LANDING = "player_jump_landing";
+    const string PLAYER_JUMP = "player_jump";
 
 
     /* dash i att mus */
@@ -258,23 +259,22 @@ public class PlayerMovementScript2 : MonoBehaviour
 
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            ChangeAnimationState(PLAYER_BASIC_ATTACK);
-        }
-
+        /*
         if (rb.velocity.y > 0)
         {
-            //Debug.Log("Should be running");
             ChangeAnimationState(PLAYER_JUMPING);
         }
         else if (rb.velocity.y < 0)
         {
             ChangeAnimationState(PLAYER_FALLING_DOWN);
         }
+        */
+        if (rb.velocity.y != 0)
+        {
+            ChangeAnimationState(PLAYER_JUMP);
+        }
         else
         {
-            Debug.Log(_currentAnimation);
             if (_currentAnimation == PLAYER_FALLING_DOWN)
             {
                 ChangeAnimationState(PLAYER_JUMP_LANDING);
@@ -290,6 +290,12 @@ public class PlayerMovementScript2 : MonoBehaviour
                     ChangeAnimationState(PLAYER_RUNNING);
                 }
             }
+        }
+        Debug.Log(_currentAnimation);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            ChangeAnimationState(PLAYER_BASIC_ATTACK);
         }
 
         if (Input.GetButtonDown("Jump"))
@@ -347,9 +353,18 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     private void ChangeAnimationState(string newAnimation)
     {
-        if (newAnimation != _currentAnimation || _currentAnimation != PLAYER_JUMP_LANDING) {
-            anim.Play(newAnimation);
-            _currentAnimation = newAnimation;
+        if (newAnimation != _currentAnimation || IsAnimationPlaying(anim, PLAYER_JUMP_LANDING))
+        {
+            if (_currentAnimation != PLAYER_JUMP)
+            {
+                anim.Play(newAnimation);
+                _currentAnimation = newAnimation;
+            }
+            else
+            {
+                anim.Play(PLAYER_JUMP_LANDING);
+                _currentAnimation = PLAYER_JUMP_LANDING;
+            }
         }
     }
 
