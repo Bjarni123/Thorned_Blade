@@ -33,6 +33,12 @@ public class PlayerMovementScript2 : MonoBehaviour
     private string _currentAnimation;
     const string PLAYER_IDLE = "player_idle";
     const string PLAYER_RUNNING = "player_running";
+    const string PLAYER_BASIC_ATTACK = "player_attack_animation";
+    const string PLAYER_JUMPING = "player_jump_up";
+    const string PLAYER_FALLING_DOWN = "player_fall_down";
+    const string PLAYER_JUMP_LANDING = "player_jump_landing";
+    const string PLAYER_JUMP = "player_jump";
+
 
     /* dash i att mus */
     private Vector3 cursorPosition;
@@ -83,7 +89,6 @@ public class PlayerMovementScript2 : MonoBehaviour
         Vector3 wallCastOffsetTemp = wallCastOffset;
         wallCastOffsetTemp.x *= -1f;
         wallCastOffsetRight = wallCastOffsetTemp;
-
     }
     
 
@@ -150,6 +155,7 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     }
 
+    /*
     private void handleCursor()
     {
         // cursor Position
@@ -164,6 +170,7 @@ public class PlayerMovementScript2 : MonoBehaviour
         float AngleDeg = (180 / Mathf.PI) * AngleRad;
         Cursor.rotation = Quaternion.Euler(0f, 0f, AngleDeg + 90);
     }
+    */
 
     private bool isWalled()
     {
@@ -252,24 +259,56 @@ public class PlayerMovementScript2 : MonoBehaviour
 
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (rb.velocity.x != 0)
+        /*
+        if (rb.velocity.y > 0)
         {
-            //Debug.Log("Should be running");
-            ChangeAnimationState(PLAYER_RUNNING);
+            ChangeAnimationState(PLAYER_JUMPING);
+        }
+        else if (rb.velocity.y < 0)
+        {
+            ChangeAnimationState(PLAYER_FALLING_DOWN);
+        }
+        */
+        if (rb.velocity.y != 0)
+        {
+            ChangeAnimationState(PLAYER_JUMP);
         }
         else
         {
-            ChangeAnimationState(PLAYER_IDLE);
+            if (_currentAnimation == PLAYER_FALLING_DOWN)
+            {
+                ChangeAnimationState(PLAYER_JUMP_LANDING);
+            }
+            else
+            {
+                if (rb.velocity.x == 0f)
+                {
+                    ChangeAnimationState(PLAYER_IDLE);
+                }
+                else
+                {
+                    ChangeAnimationState(PLAYER_RUNNING);
+                }
+            }
+        }
+        Debug.Log(_currentAnimation);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            ChangeAnimationState(PLAYER_BASIC_ATTACK);
         }
 
-        if (Input.GetButtonDown("Jump") && isGrounded())
+        if (Input.GetButtonDown("Jump"))
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-        }
+            if (isGrounded())
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+            }
 
-        if (Input.GetButtonDown("Jump") && rb.velocity.y > 0f)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            if (rb.velocity.y > 0f)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
@@ -314,9 +353,18 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     private void ChangeAnimationState(string newAnimation)
     {
-        if (newAnimation != _currentAnimation) {
-            anim.Play(newAnimation);
-            _currentAnimation = newAnimation;
+        if (newAnimation != _currentAnimation || IsAnimationPlaying(anim, PLAYER_JUMP_LANDING))
+        {
+            if (_currentAnimation != PLAYER_JUMP)
+            {
+                anim.Play(newAnimation);
+                _currentAnimation = newAnimation;
+            }
+            else
+            {
+                anim.Play(PLAYER_JUMP_LANDING);
+                _currentAnimation = PLAYER_JUMP_LANDING;
+            }
         }
     }
 

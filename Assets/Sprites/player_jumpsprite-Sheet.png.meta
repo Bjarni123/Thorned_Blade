@@ -1,21 +1,34 @@
 fileFormatVersion: 2
-guid: dde9886b45fe5cf4d8e246d96ceb8e49
+guid: b2455dd6a14625749b52a31bcf4cfcb8
 TextureImporter:
-
   internalIDToNameTable:
   - first:
-      213: -3577398868474776405
-    second: attack_ani_player-Sheet_0
+      213: 6173511056368931276
+    second: player_jumpsprite-Sheet_0
   - first:
-      213: -7752471958827329625
-    second: attack_ani_player-Sheet_1
+      213: -6047722701143048585
+    second: player_jumpsprite-Sheet_1
   - first:
-      213: 4574622118357113711
-    second: attack_ani_player-Sheet_2
+      213: 8076476327812309248
+    second: player_jumpsprite-Sheet_2
   - first:
-      213: -5929799123572143753
-    second: attack_ani_player-Sheet_3
-
+      213: 3821939407608537219
+    second: player_jumpsprite-Sheet_3
+  - first:
+      213: 6737335493834064115
+    second: player_jumpsprite-Sheet_4
+  - first:
+      213: 2432716356063517931
+    second: player_jumpsprite-Sheet_5
+  - first:
+      213: 150779566182150081
+    second: player_jumpsprite-Sheet_6
+  - first:
+      213: 4548343775539245918
+    second: player_jumpsprite-Sheet_7
+  - first:
+      213: -6325139257577155937
+    second: player_jumpsprite-Sheet_8
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -46,9 +59,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-
     filterMode: 0
-
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -57,16 +68,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-
   spriteMode: 2
-
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-
   spritePixelsToUnits: 16
-
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -95,7 +102,6 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -124,13 +130,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: attack_ani_player-Sheet_0
+      name: player_jumpsprite-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 42
-        height: 42
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -138,20 +144,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba43da8dea68a5ec0800000000000000
-      internalID: -3577398868474776405
+      spriteID: cc111dbd897bca550800000000000000
+      internalID: 6173511056368931276
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_ani_player-Sheet_1
+      name: player_jumpsprite-Sheet_1
       rect:
         serializedVersion: 2
-        x: 42
+        x: 32
         y: 0
-        width: 42
-        height: 42
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +165,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7a79beae3dfa96490800000000000000
-      internalID: -7752471958827329625
+      spriteID: 77e7d4ade3c221ca0800000000000000
+      internalID: -6047722701143048585
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_ani_player-Sheet_2
+      name: player_jumpsprite-Sheet_2
       rect:
         serializedVersion: 2
-        x: 84
+        x: 64
         y: 0
-        width: 42
-        height: 42
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -180,20 +186,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f6b125a44925c7f30800000000000000
-      internalID: 4574622118357113711
+      spriteID: 001aa1cdd68651070800000000000000
+      internalID: 8076476327812309248
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_ani_player-Sheet_3
+      name: player_jumpsprite-Sheet_3
       rect:
         serializedVersion: 2
-        x: 126
+        x: 96
         y: 0
-        width: 42
-        height: 42
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -201,13 +207,117 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7794f025d1f15bda0800000000000000
-      internalID: -5929799123572143753
+      spriteID: 380e29744a14a0530800000000000000
+      internalID: 3821939407608537219
       vertices: []
       indices: 
       edges: []
       weights: []
-
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f04c9a8fe2df7d50800000000000000
+      internalID: 6737335493834064115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: becd27203aeb2c120800000000000000
+      internalID: 2432716356063517931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cfaca1773da71200800000000000000
+      internalID: 150779566182150081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e533061d096fe1f30800000000000000
+      internalID: 4548343775539245918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_jumpsprite-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f925c357b579838a0800000000000000
+      internalID: -6325139257577155937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
