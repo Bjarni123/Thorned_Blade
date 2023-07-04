@@ -8,13 +8,6 @@ public class PlayerMovementScript2 : MonoBehaviour
     public float jumpingPower = 16f;
     private bool isFacingRight = false;
 
-    /* dash */
-    private bool canDash = true;
-    private bool isDashing;
-    public float dashingPower = 50f;
-    private float dashingTime = 0.1f;
-    private float dashingCooldown = 1f;
-
     // wall jumping
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
@@ -32,27 +25,36 @@ public class PlayerMovementScript2 : MonoBehaviour
     /* animation */
     private string _currentAnimation;
     const string PLAYER_IDLE = "player_idle";
-    const string PLAYER_RUNNING = "player_running";
-    const string PLAYER_BASIC_ATTACK = "player_attack_animation";
-    const string PLAYER_JUMPING = "player_jump_up";
-    const string PLAYER_FALLING_DOWN = "player_fall_down";
-    const string PLAYER_JUMP_LANDING = "player_jump_landing";
+    const string PLAYER_RUN = "player_running";
+    const string PLAYER_ATTACK = "player_attack";
     const string PLAYER_JUMP = "player_jump";
-
+    const string PLAYER_DASH = "player_dash";
+    const string PLAYER_BLOCK = "player_blocking";
 
     /* dash i att mus */
     private Vector3 cursorPosition;
     public Vector2 cursorOffset;
+    private Vector2 cursorDir;
 
     /* wall jump */
     private bool on_wall = false;
 
+    /* Attack thingy majingy */
+    private bool isAttacking = false;
+    private float attackTime = 0.6f;
 
+    /* Blocking */
+
+    private bool isBlocking = false;
+
+    [Header("Dash Settings")]
+    /* dash */
+    public float dashingPower = 35f;
+    public float dashingTime = 0.1f;
+    public float dashingCooldown = 1f;
+    private bool canDash = true;
+    private bool isDashing;
     
-    //[SerializeField] private Transform wallCheck;
-    //[SerializeField] private LayerMask wallLayer;
-    //[SerializeField] private Transform groundCheck;
-    //[SerializeField] private LayerMask groundLayer;
 
     [Header("Ground Check")]
     // wall og ground check
@@ -76,13 +78,12 @@ public class PlayerMovementScript2 : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private TrailRenderer tr;
     [SerializeField] private Transform Cursor;
-    private Animator anim;
-    private BoxCollider2D collider;
+    public Animator anim;
 
 
     private void Start()
     {
-        anim = gameObject.GetComponent<Animator>();
+        // anim = gameObject.GetComponent<Animator>();
         // wallCastOffset = wallCastOffsetLeft;
 
         wallCastOffsetLeft = wallCastOffset;
@@ -94,9 +95,11 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     void Update()
     {
-        
+        handleAnimations();
         handleInAirGravity();
         handleMovement();
+        updateCursorDir();
+        Debug.Log(cursorDir);
 
         
         WallSlide();
@@ -144,33 +147,46 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     private void handleInAirGravity()
     {
-        if (rb.velocity.y < 0)
+        if (!isDashing)
         {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultipler - 1) * Time.deltaTime;
+            if (rb.velocity.y < 0)
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultipler - 1) * Time.deltaTime;
+            }
+            else if (rb.velocity.y > 0 /*&& !Input.GetButton("Jump")*/)
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            }
         }
-        else if (rb.velocity.y > 0 /*&& !Input.GetButton("Jump")*/)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
-        }
-
     }
 
-    /*
-    private void handleCursor()
+    private void handleAnimations()
     {
-        // cursor Position
-        cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        cursorPosition.z = 0f;
-        Vector2 cursorDir = (cursorPosition - transform.position).normalized;
-        Cursor.transform.position = (rb.position + cursorDir) - cursorOffset;
-
-        // Cursor Rotation
-        Vector3 lookAt = rb.position;
-        float AngleRad = Mathf.Atan2(lookAt.y - Cursor.position.y, lookAt.x - Cursor.position.x);
-        float AngleDeg = (180 / Mathf.PI) * AngleRad;
-        Cursor.rotation = Quaternion.Euler(0f, 0f, AngleDeg + 90);
+        if (isDashing)
+        {
+            ChangeAnimationState(PLAYER_DASH);
+        }
+        else if (isAttacking)
+        {
+            ChangeAnimationState(PLAYER_ATTACK);
+        }
+        else if (isBlocking)
+        {
+            ChangeAnimationState(PLAYER_BLOCK);
+        }
+        else if (!isGrounded())
+        {
+            ChangeAnimationState(PLAYER_JUMP);
+        }
+        else if (rb.velocity.x != 0)
+        {
+            ChangeAnimationState(PLAYER_RUN);
+        }
+        else
+        {
+            ChangeAnimationState(PLAYER_IDLE);
+        }
     }
-    */
 
     private bool isWalled()
     {
@@ -220,7 +236,7 @@ public class PlayerMovementScript2 : MonoBehaviour
             wallJumpingDirection = -transform.localScale.x;
             wallJumpingCounter = wallJumpingTime;
 
-            CancelInvoke(nameof(StopWallJumping));
+            // CancelInvoke(nameof(StopWallJumping));
         }
         else
         {
@@ -258,44 +274,9 @@ public class PlayerMovementScript2 : MonoBehaviour
         }
 
         horizontal = Input.GetAxisRaw("Horizontal");
-
-        /*
-        if (rb.velocity.y > 0)
+        if ((isFacingRight && horizontal < 0f) || (!isFacingRight && horizontal > 0f)) 
         {
-            ChangeAnimationState(PLAYER_JUMPING);
-        }
-        else if (rb.velocity.y < 0)
-        {
-            ChangeAnimationState(PLAYER_FALLING_DOWN);
-        }
-        */
-        if (rb.velocity.y != 0)
-        {
-            ChangeAnimationState(PLAYER_JUMP);
-        }
-        else
-        {
-            if (_currentAnimation == PLAYER_FALLING_DOWN)
-            {
-                ChangeAnimationState(PLAYER_JUMP_LANDING);
-            }
-            else
-            {
-                if (rb.velocity.x == 0f)
-                {
-                    ChangeAnimationState(PLAYER_IDLE);
-                }
-                else
-                {
-                    ChangeAnimationState(PLAYER_RUNNING);
-                }
-            }
-        }
-        Debug.Log(_currentAnimation);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            ChangeAnimationState(PLAYER_BASIC_ATTACK);
+            horizontal *= 0.8f;
         }
 
         if (Input.GetButtonDown("Jump"))
@@ -315,18 +296,36 @@ public class PlayerMovementScript2 : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
+        if (Input.GetMouseButton(0) && !isAttacking)
+        {
+            StartCoroutine(Attack());
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            isBlocking = true;
+        }
+        else
+        {
+            isBlocking = false;
+        }
     }
 
     private void Flip()
     {
-        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
+        if ((cursorDir.x < 0f && isFacingRight) || (cursorDir.x > 0f && !isFacingRight))
         {
             isFacingRight = !isFacingRight;
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
-            
         }
+    }
+
+    private IEnumerator Attack()
+    {
+        isAttacking = true;
+        yield return new WaitForSeconds(attackTime);
+        isAttacking = false;
     }
 
     private IEnumerator Dash()
@@ -337,34 +336,35 @@ public class PlayerMovementScript2 : MonoBehaviour
         rb.gravityScale = 0f;
 
         // rb.velocity = new Vector2(transform.localScale.x * -dashingPower, 0f);
-        cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        /*cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         cursorPosition.z = 0f;
         Vector2 dashingDir = (cursorPosition - transform.position).normalized;
-        rb.velocity = dashingDir * dashingPower;
+        */
+        rb.velocity = cursorDir * dashingPower;
 
         tr.emitting = true;
         yield return new WaitForSeconds(dashingTime);
         tr.emitting = false;
         rb.gravityScale = originalGravity;
         isDashing = false;
+        float newYVelocity = rb.velocity.y * 0.5f;
+        rb.velocity = new Vector2(rb.velocity.x, newYVelocity);
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
     }
 
+    private void updateCursorDir()
+    {
+        cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        cursorPosition.z = 0f;
+        cursorDir = (cursorPosition - transform.position).normalized;
+    }
+
     private void ChangeAnimationState(string newAnimation)
     {
-        if (newAnimation != _currentAnimation || IsAnimationPlaying(anim, PLAYER_JUMP_LANDING))
+        if (newAnimation != _currentAnimation)
         {
-            if (_currentAnimation != PLAYER_JUMP)
-            {
-                anim.Play(newAnimation);
-                _currentAnimation = newAnimation;
-            }
-            else
-            {
-                anim.Play(PLAYER_JUMP_LANDING);
-                _currentAnimation = PLAYER_JUMP_LANDING;
-            }
+            anim.Play(newAnimation);
         }
     }
 
