@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - enemy
   layers:
   - Default
   - TransparentFX
@@ -40,4 +41,31 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: layer_4
+    uniqueID: 967313551
+    locked: 0
+  - name: layer_3
+    uniqueID: 3721501121
+    locked: 0
+  - name: layer_2
+    uniqueID: 3642102237
+    locked: 0
+  - name: layer_1
+    uniqueID: 3135052683
+    locked: 0
+  - name: close_behind_player
+    uniqueID: 3018550501
+    locked: 0
+  - name: player
+    uniqueID: 265818593
+    locked: 0
+  - name: infront_of_player
+    uniqueID: 3286058811
+    locked: 0
+  - name: ground
+    uniqueID: 2856195483
+    locked: 0
+  - name: infront_of_ground
+    uniqueID: 2564991081
     locked: 0
