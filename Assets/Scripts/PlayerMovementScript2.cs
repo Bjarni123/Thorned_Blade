@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerMovementScript2 : MonoBehaviour
 {
+
     private float horizontal;
     private float speed = 8f;
     public float jumpingPower = 16f;
@@ -71,8 +72,16 @@ public class PlayerMovementScript2 : MonoBehaviour
     public Vector3 wallCastOffset;
     private Vector3 wallCastOffsetRight;
     private Vector3 wallCastOffsetLeft;
-
     [SerializeField] private LayerMask wallLayer;
+
+    [Header("sword hitbox")]
+    //sword hitbox
+    public Vector2 sword_hit_box_size;
+    public float sword_cast_distance;
+    private Vector3 sword_CastOffsetRight;
+    private Vector3 sword_CastOffsetLeft;
+    public Vector3 sword_cast_offset;
+
 
     [Header("Objects")]
     [SerializeField] private Rigidbody2D rb;
@@ -90,6 +99,12 @@ public class PlayerMovementScript2 : MonoBehaviour
         Vector3 wallCastOffsetTemp = wallCastOffset;
         wallCastOffsetTemp.x *= -1f;
         wallCastOffsetRight = wallCastOffsetTemp;
+
+        // sama og þu varst að gera fyrir ofan nema með sverð
+        sword_CastOffsetLeft = sword_cast_offset;
+        Vector3 sword_cast_offset_temp = sword_cast_offset;
+        sword_cast_offset_temp.x *= -1f;
+        sword_CastOffsetRight = sword_cast_offset_temp ;
     }
     
 
@@ -99,9 +114,10 @@ public class PlayerMovementScript2 : MonoBehaviour
         handleInAirGravity();
         handleMovement();
         updateCursorDir();
-        Debug.Log(cursorDir);
+        //Debug.Log(cursorDir);
 
         
+
         WallSlide();
         wallJump();
         
@@ -122,7 +138,19 @@ public class PlayerMovementScript2 : MonoBehaviour
 
         rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
     }
-
+    
+    private RaycastHit2D Sword_swing_hit()
+    {
+        if (isFacingRight)
+        {
+            return Physics2D.BoxCast((transform.position + sword_CastOffsetRight), sword_hit_box_size, 0, -transform.right, sword_cast_distance);
+        }
+        else
+        {
+            return Physics2D.BoxCast((transform.position + sword_CastOffsetLeft), sword_hit_box_size, 0, -transform.right, sword_cast_distance);
+        }
+    }
+    
     private bool isGrounded()
     {
         /* enda partur þarf að breyta allt eftir fyrsta and */
@@ -142,7 +170,7 @@ public class PlayerMovementScript2 : MonoBehaviour
     {
         Gizmos.DrawWireCube((transform.position - transform.up * wallCastDistance) + wallCastOffset, wallBoxSize);
         Gizmos.DrawWireCube((transform.position - transform.up * groundCastDistance) + groundCastOffset, groundBoxSize);
-        
+        Gizmos.DrawWireCube((transform.position - transform.up * sword_cast_distance) + sword_cast_offset, sword_hit_box_size);
     }
 
     private void handleInAirGravity()
@@ -257,7 +285,7 @@ public class PlayerMovementScript2 : MonoBehaviour
                 transform.localScale = localScale;
             }
 
-           Invoke(nameof(StopWallJumping), wallJumpingDuration);
+        Invoke(nameof(StopWallJumping), wallJumpingDuration);
         }
     }
 
@@ -289,7 +317,7 @@ public class PlayerMovementScript2 : MonoBehaviour
             if (rb.velocity.y > 0f)
             {
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-            }
+            } 
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
@@ -324,7 +352,30 @@ public class PlayerMovementScript2 : MonoBehaviour
     private IEnumerator Attack()
     {
         isAttacking = true;
+
+        RaycastHit2D hit = Sword_swing_hit();
+
+        // Check if the box cast hit a collider
+        if (hit.collider != null)
+        {
+            // Check if the collider has a 2D box collider
+            BoxCollider2D boxCollider = hit.collider.GetComponent<BoxCollider2D>();
+
+            if (boxCollider != null)
+            {
+                // The box cast hit a 2D box collider
+                Debug.Log(hit.collider.gameObject.tag);
+
+                if(hit.collider.gameObject.CompareTag("enemy"))
+                {
+                    Debug.Log("meow");
+                    hit.collider.gameObject.GetComponent<main_script_strawman>().i_have_been_hit();
+                }
+                // Do something with the collider or the object it's attached to
+            }
+        }
         yield return new WaitForSeconds(attackTime);
+
         isAttacking = false;
     }
 
