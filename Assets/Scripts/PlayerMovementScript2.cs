@@ -31,6 +31,8 @@ public class PlayerMovementScript2 : MonoBehaviour
     const string PLAYER_JUMP = "player_jump";
     const string PLAYER_DASH = "player_dash";
     const string PLAYER_BLOCK = "player_blocking";
+    const string PLAYER_ATTACK_DOWN = "player_attack_down";
+    const string PLAYER_ATTACK_UP = "player_attack_up";
 
     /* dash i att mus */
     private Vector3 cursorPosition;
@@ -42,7 +44,8 @@ public class PlayerMovementScript2 : MonoBehaviour
 
     /* Attack thingy majingy */
     private bool isAttacking = false;
-    private float attackTime = 0.6f;
+    private float attackTime = 0.4f;
+    private int typeOfAttack;
 
     /* Blocking */
 
@@ -82,6 +85,11 @@ public class PlayerMovementScript2 : MonoBehaviour
     private Vector3 sword_CastOffsetLeft;
     public Vector3 sword_cast_offset;
 
+    public Vector3 sword_cast_offset_up;
+    public Vector2 sword_hit_box_size_up;
+
+    public Vector3 sword_cast_offset_down;
+
 
     [Header("Objects")]
     [SerializeField] private Rigidbody2D rb;
@@ -104,7 +112,7 @@ public class PlayerMovementScript2 : MonoBehaviour
         sword_CastOffsetLeft = sword_cast_offset;
         Vector3 sword_cast_offset_temp = sword_cast_offset;
         sword_cast_offset_temp.x *= -1f;
-        sword_CastOffsetRight = sword_cast_offset_temp ;
+        sword_CastOffsetRight = sword_cast_offset_temp;
     }
     
 
@@ -141,13 +149,27 @@ public class PlayerMovementScript2 : MonoBehaviour
     
     private RaycastHit2D Sword_swing_hit()
     {
-        if (isFacingRight)
+        switch (typeOfAttack)
         {
-            return Physics2D.BoxCast((transform.position + sword_CastOffsetRight), sword_hit_box_size, 0, -transform.right, sword_cast_distance);
-        }
-        else
-        {
-            return Physics2D.BoxCast((transform.position + sword_CastOffsetLeft), sword_hit_box_size, 0, -transform.right, sword_cast_distance);
+            case 1:
+                if (isFacingRight)
+                {
+                    return Physics2D.BoxCast((transform.position + sword_CastOffsetRight), sword_hit_box_size, 0, -transform.right, sword_cast_distance);
+                }
+                else
+                {
+                    return Physics2D.BoxCast((transform.position + sword_CastOffsetLeft), sword_hit_box_size, 0, -transform.right, sword_cast_distance);
+                }
+                break;
+            case 2:
+                return Physics2D.BoxCast((transform.position + sword_cast_offset_up), sword_hit_box_size_up, 90, transform.up, sword_cast_distance);
+                break;
+            case 3:
+                return Physics2D.BoxCast((transform.position + sword_cast_offset_down), sword_hit_box_size_up, 0, -transform.up, sword_cast_distance);
+                break;
+            default:
+                Debug.Log("this is default inside Sword_swing_hit()");
+                return Physics2D.BoxCast((transform.position + sword_CastOffsetRight), sword_hit_box_size, 0, -transform.right, sword_cast_distance); ;
         }
     }
     
@@ -171,6 +193,8 @@ public class PlayerMovementScript2 : MonoBehaviour
         Gizmos.DrawWireCube((transform.position - transform.up * wallCastDistance) + wallCastOffset, wallBoxSize);
         Gizmos.DrawWireCube((transform.position - transform.up * groundCastDistance) + groundCastOffset, groundBoxSize);
         Gizmos.DrawWireCube((transform.position - transform.up * sword_cast_distance) + sword_cast_offset, sword_hit_box_size);
+        Gizmos.DrawWireCube((transform.position - transform.up * sword_cast_distance) + sword_cast_offset_up, sword_hit_box_size_up);
+        Gizmos.DrawWireCube((transform.position - transform.up * sword_cast_distance) + sword_cast_offset_down, sword_hit_box_size_up);
     }
 
     private void handleInAirGravity()
@@ -196,7 +220,21 @@ public class PlayerMovementScript2 : MonoBehaviour
         }
         else if (isAttacking)
         {
-            ChangeAnimationState(PLAYER_ATTACK);
+            switch (typeOfAttack)
+            {
+                case 1:
+                    ChangeAnimationState(PLAYER_ATTACK);
+                    break;
+                case 2:
+                    ChangeAnimationState(PLAYER_ATTACK_UP);
+                    break;
+                case 3:
+                    ChangeAnimationState(PLAYER_ATTACK_DOWN);
+                    break;
+                default:
+                    Debug.Log("typeOfAttack is weird");
+                    break;
+            }
         }
         else if (isBlocking)
         {
@@ -353,6 +391,18 @@ public class PlayerMovementScript2 : MonoBehaviour
     {
         isAttacking = true;
 
+        if (cursorDir.y < -0.5f)
+        {
+            typeOfAttack = 3;
+        }
+        else if (cursorDir.y > 0.5f)
+        {
+            typeOfAttack = 2;
+        }
+        else
+        {
+            typeOfAttack = 1;
+        }
         RaycastHit2D hit = Sword_swing_hit();
 
         // Check if the box cast hit a collider
@@ -368,7 +418,6 @@ public class PlayerMovementScript2 : MonoBehaviour
 
                 if(hit.collider.gameObject.CompareTag("enemy"))
                 {
-                    Debug.Log("meow");
                     hit.collider.gameObject.GetComponent<main_script_strawman>().i_have_been_hit();
                 }
                 // Do something with the collider or the object it's attached to
