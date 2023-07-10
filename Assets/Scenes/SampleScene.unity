@@ -8092,9 +8092,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b92e1f91668f5c45a2e39ec50c4ce77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpingPower: 32
-  fallMultipler: 2
-  lowJumpMultiplier: 5
+  jumpingPower: 25
+  fallMultipler: 1.7
+  lowJumpMultiplier: 3
   cursorOffset: {x: -0.1, y: 0.2}
   dashingPower: 30
   dashingTime: 0.15
