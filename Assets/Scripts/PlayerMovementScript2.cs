@@ -39,9 +39,6 @@ public class PlayerMovementScript2 : MonoBehaviour
     public Vector2 cursorOffset;
     private Vector2 cursorDir;
 
-    /* wall jump */
-    private bool on_wall = false;
-
     /* Attack thingy majingy */
     private bool isAttacking = false;
     private float attackTime = 0.4f;
@@ -160,13 +157,10 @@ public class PlayerMovementScript2 : MonoBehaviour
                 {
                     return Physics2D.BoxCast((transform.position + sword_CastOffsetLeft), sword_hit_box_size, 0, -transform.right, sword_cast_distance);
                 }
-                break;
             case 2:
                 return Physics2D.BoxCast((transform.position + sword_cast_offset_up), sword_hit_box_size_up, 90, transform.up, sword_cast_distance);
-                break;
             case 3:
                 return Physics2D.BoxCast((transform.position + sword_cast_offset_down), sword_hit_box_size_up, 0, -transform.up, sword_cast_distance);
-                break;
             default:
                 Debug.Log("this is default inside Sword_swing_hit()");
                 return Physics2D.BoxCast((transform.position + sword_CastOffsetRight), sword_hit_box_size, 0, -transform.right, sword_cast_distance); ;
